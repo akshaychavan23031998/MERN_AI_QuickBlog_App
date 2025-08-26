@@ -4,7 +4,7 @@ import CommentTableItem from "../../components/admin/CommentTableItem";
 
 const Comments = () => {
   const [comments, setComments] = useState([]);
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState('Not Approved');
 
   const fetchComments = async () => {
     setComments(comments_data);
