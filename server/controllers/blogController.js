@@ -1,68 +1,8 @@
-// import fs from "fs";
-// import imagekit from "../configs/imageKit.js";
-// import Blog from "../models/Blog.js";
-
-// export const addBlog = async (req, res) => {
-//   try {
-//     const { title, subTitle, description, category, isPublished } = JSON.parse(
-//       req.body.blog
-//     );
-//     const imageFile = req.file;
-
-//     // check if all fileds are present
-//     if (!title || !description || !category || !isPublished) {
-//       return res.json({
-//         success: false,
-//         message: "Missing Fileds are required",
-//       });
-
-//     //   const fileBuffer = fs.readFileSync(imageFile.path);
-//       const fileBuffer = imageFile.buffer ?? fs.readFileSync(imageFile.path);
-
-//       // Upload Image to ImageKit
-//       const response = await imagekit.upload({
-//         file: fileBuffer,
-//         fileName: imageFile.originalname,
-//         folder: "/blogs",
-//       });
-
-//       //   Optimization through imageKit url transformation
-//       const optimizedImageUrl = imagekit.url({
-//         path: response.filePath,
-//         transformation: [
-//           { quality: "auto" }, // Auto compression
-//           { formate: "webp" }, // convert to modern formate
-//           { width: "1280" }, // width resizing
-//         ],
-//       });
-
-//       const image = optimizedImageUrl;
-
-//       const Blog_Data = await Blog.create({
-//         title,
-//         subTitle,
-//         description,
-//         category,
-//         image,
-//         isPublished,
-//       });
-
-//       res.json({
-//         success: true,
-//         message: "Blog Added Successfully",
-//         data: Blog_Data,
-//       });
-//     }
-//   } catch (error) {
-//     res.json({ success: false, message: error.message, data: Blog_Data });
-//   }
-// };
-
-// server/controllers/blogController.js
 import fs from "fs";
 import imagekit from "../configs/imageKit.js";
 import Blog from "../models/Blog.js";
 import Comment from "../models/Comments.js";
+import main from "../configs/gemini.js";
 
 export const addBlog = async (req, res) => {
   try {
@@ -208,6 +148,18 @@ export const getBlogComments = async (req, res) => {
       isApproved: true,
     }).sort({ createdAt: -1 });
     res.json({ success: true, comments });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const generateContent = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const content = await main(
+      prompt + " Generate a blog content for this topic in simple text formate"
+    );
+    res.json({ success: true, content });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
