@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [input, setInput] = useState([]);
+  const [input, setInput] = useState("");
 
   const fetchBlogs = async () => {
     try {
